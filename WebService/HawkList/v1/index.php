@@ -60,7 +60,8 @@ function authenticate(\Slim\Route $route) {
 $app->post('/register', function() use ($app) {
             // check for required params
             verifyRequiredParams(array('name', 'email', 'password'));
-
+			
+			// json response array
             $response = array();
 
             // reading post params
@@ -74,18 +75,25 @@ $app->post('/register', function() use ($app) {
             $db = new DbHandler();
             $res = $db->createUser($name, $email, $password);
 
-            if ($res == USER_CREATED_SUCCESSFULLY) {
-                $response["error"] = false;
+            if ($res['result'] == USER_CREATED_SUCCESSFULLY) {
+            
+            	$user = $db->getUserByEmail($email);
+                $response["error"] = FALSE;
                 $response["message"] = "You are successfully registered";
-            } else if ($res == USER_CREATE_FAILED) {
-                $response["error"] = true;
+                $response["api_key"] = $user['api_key'];
+                $response["user"]["name"] = $user['name'];
+           	 	$response["user"]["email"] = $user['email'];
+           	 	$response["user"]["created_at"] = $user['created_at'];
+            } else if ($res['result'] == USER_CREATE_FAILED) {
+                $response["error"] = TRUE;
                 $response["message"] = "Oops! An error occurred while registereing";
-            } else if ($res == USER_ALREADY_EXISTED) {
-                $response["error"] = true;
+            } else if ($res['result'] == USER_ALREADY_EXISTED) {
+                $response["error"] = TRUE;
                 $response["message"] = "Sorry, this email already existed";
             }
             // echo json response
             echoRespnse(201, $response);
+            //echo json_encode($response);
         });
 
 /**
@@ -111,10 +119,10 @@ $app->post('/login', function() use ($app) {
 
                 if ($user != NULL) {
                     $response["error"] = false;
-                    $response['name'] = $user['name'];
-                    $response['email'] = $user['email'];
-                    $response['apiKey'] = $user['api_key'];
-                    $response['createdAt'] = $user['created_at'];
+                    $response['api_key'] = $user['api_key'];
+					$response["user"]["name"] = $user['name'];
+           	 		$response["user"]["email"] = $user['email'];
+           	 		$response["user"]["created_at"] = $user['created_at'];
                 } else {
                     // unknown error occurred
                     $response['error'] = true;
@@ -331,7 +339,7 @@ function echoRespnse($status_code, $response) {
     $app->status($status_code);
 
     // setting response content type to json
-    $app->contentType('application/json');
+    //$app->contentType('application/json');
 
     echo json_encode($response);
 }

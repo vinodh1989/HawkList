@@ -27,7 +27,7 @@ class DbHandler {
      */
     public function createUser($name, $email, $password) {
         require_once 'PassHash.php';
-        $response = array();
+       	$response = array("result" => FALSE);
 
         // First check if user already existed in db
         if (!$this->isUserExists($email)) {
@@ -44,18 +44,21 @@ class DbHandler {
             $result = $stmt->execute();
 
             $stmt->close();
-
+			
             // Check for successful insertion
             if ($result) {
                 // User successfully inserted
-                return USER_CREATED_SUCCESSFULLY;
+				$response["result"] = USER_CREATED_SUCCESSFULLY;
+                return $response;
             } else {
                 // Failed to create user
-                return USER_CREATE_FAILED;
+                $response["result"] = USER_CREATE_FAILED;
+                return $response;
             }
         } else {
             // User with same email already existed in the db
-            return USER_ALREADY_EXISTED;
+            $response["result"] = USER_ALREADY_EXISTED;
+             return $response;
         }
 
         return $response;
