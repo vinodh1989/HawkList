@@ -11,4 +11,8 @@
     <string name="welcome">Welcome</string>
     <string name="btn_logout">LOGOUT</string>
     <string name="name">Full Name</string>
+    <string name="btnTakePhoto">Take Photo</string>
+    <string name="btnSelectPhoto">Select Photo</string>
+    <string name="or">(or)</string>
+    <string name="btnUpload">Upload to Server</string>
 </resources>

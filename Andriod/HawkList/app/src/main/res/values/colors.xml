@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <!-- Login and Register-->
     <color name="bg_login">#125688</color>
     <color name="bg_register">#125688</color>
     <color name="bg_main">#125688</color>
@@ -17,12 +17,22 @@
     <color name="lbl_name">#333333</color>
     <color name="btn_logut_bg">#125688</color>
 
+    <!-- Menu-->
     <color name="colorPrimary">#125688</color>
     <color name="colorPrimaryDark">#125688</color>
     <color name="textColorPrimary">#FFFFFF</color>
     <color name="windowBackground">#FFFFFF</color>
     <color name="navigationBarColor">#000000</color>
     <color name="colorAccent">#c8e8ff</color>
+
+    <!--Photo-->
+    <color name="view_background">#ffffff</color>
+    <color name="btn_select_photo_bg">#125688</color>
+    <color name="btn_take_photo_bg">#125688</color>
+    <color name="btn_upload_bg">#125688</color>
+    <color name="txt_font">#125688</color>
+    <color name="action_bar">#1f2649</color>
+
 
 
 </resources>

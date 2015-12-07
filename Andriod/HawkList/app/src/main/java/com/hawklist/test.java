@@ -1,16 +1,17 @@
 package com.hawklist;
 
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Base64;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,48 +30,38 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Map;
 
-import app.AppConfig;
-
-public class AddItem extends Fragment implements View.OnClickListener {
-
+public class test extends AppCompatActivity implements View.OnClickListener  {
 
     private Button buttonChoose;
     private Button buttonUpload;
 
     private ImageView imageView;
-    private EditText itemname;
-    private EditText itemcost;
-    
+
+    private EditText editTextName;
 
     private Bitmap bitmap;
 
     private int PICK_IMAGE_REQUEST = 1;
 
+    private String UPLOAD_URL ="http://simplifiedcoding.16mb.com/VolleyUpload/upload.php";
+
     private String KEY_IMAGE = "image";
     private String KEY_NAME = "name";
-    private String KEY_COST = "cost";
-
-    public AddItem() {
-        // Required empty public constructor
-    }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
+        setContentView(R.layout.activity_main);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.activity_additem, container, false);
-        buttonChoose = (Button) v.findViewById(R.id.buttonChoose);
-        buttonUpload = (Button) v.findViewById(R.id.buttonUpload);
-        itemname = (EditText) v.findViewById(R.id.itemname);
-        itemcost = (EditText) v.findViewById(R.id.itemcost);
-        imageView  = (ImageView) v.findViewById(R.id.imageView);
+        buttonChoose = (Button) findViewById(R.id.buttonChoose);
+        buttonUpload = (Button) findViewById(R.id.buttonUpload);
 
-        return v;
+        editTextName = (EditText) findViewById(R.id.editText);
+
+        imageView  = (ImageView) findViewById(R.id.imageView);
+
+        buttonChoose.setOnClickListener(this);
+        buttonUpload.setOnClickListener(this);
     }
 
     public String getStringImage(Bitmap bmp){
@@ -83,15 +74,15 @@ public class AddItem extends Fragment implements View.OnClickListener {
 
     private void uploadImage(){
         //Showing the progress dialog
-        final ProgressDialog loading = ProgressDialog.show(getActivity(),"Uploading...","Please wait...",false,false);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, AppConfig.UPLOAD_URL,
+        final ProgressDialog loading = ProgressDialog.show(this,"Uploading...","Please wait...",false,false);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
                         //Disimissing the progress dialog
                         loading.dismiss();
                         //Showing toast message of the response
-                        Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
+                        Toast.makeText(test.this, s , Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() {
@@ -101,7 +92,7 @@ public class AddItem extends Fragment implements View.OnClickListener {
                         loading.dismiss();
 
                         //Showing toast
-                        Toast.makeText(getActivity(), volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(test.this, volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
                     }
                 }){
             @Override
@@ -109,9 +100,8 @@ public class AddItem extends Fragment implements View.OnClickListener {
                 //Converting Bitmap to String
                 String image = getStringImage(bitmap);
 
-                //Getting Item Name
-                String name = itemname.getText().toString().trim();
-                String cost = itemcost.getText().toString().trim();
+                //Getting Image Name
+                String name = editTextName.getText().toString().trim();
 
                 //Creating parameters
                 Map<String,String> params = new Hashtable<String, String>();
@@ -119,7 +109,6 @@ public class AddItem extends Fragment implements View.OnClickListener {
                 //Adding parameters
                 params.put(KEY_IMAGE, image);
                 params.put(KEY_NAME, name);
-                params.put(KEY_COST, cost);
 
                 //returning parameters
                 return params;
@@ -127,7 +116,7 @@ public class AddItem extends Fragment implements View.OnClickListener {
         };
 
         //Creating a Request Queue
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         //Adding request to the queue
         requestQueue.add(stringRequest);
@@ -141,16 +130,14 @@ public class AddItem extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        buttonChoose.setOnClickListener(this);
-        buttonUpload.setOnClickListener(this);
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == getActivity().RESULT_OK && data != null && data.getData() != null) {
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri filePath = data.getData();
             try {
                 //Getting the Bitmap from Gallery
-                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePath);
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 //Setting the Bitmap to ImageView
                 imageView.setImageBitmap(bitmap);
             } catch (IOException e) {
@@ -159,6 +146,7 @@ public class AddItem extends Fragment implements View.OnClickListener {
         }
     }
 
+    @Override
     public void onClick(View v) {
 
         if(v == buttonChoose){
@@ -169,5 +157,4 @@ public class AddItem extends Fragment implements View.OnClickListener {
             uploadImage();
         }
     }
-
 }

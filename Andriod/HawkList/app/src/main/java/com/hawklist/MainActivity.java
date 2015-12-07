@@ -25,11 +25,7 @@ import android.view.LayoutInflater;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView txtName;
-    private TextView txtEmail;
-    private Button btnLogout;
-
-    private Toolbar toolbar;
+    //private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
@@ -47,9 +43,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        //toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -58,44 +54,14 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
 
-        txtName = (TextView) findViewById(R.id.name);
-        txtEmail = (TextView) findViewById(R.id.email);
-        btnLogout = (Button) findViewById(R.id.btnLogout);
 
-        // SqLite database handler
-        db = new SQLiteHandler(getApplicationContext());
 
-        // session manager
-        session = new SessionManager(getApplicationContext());
-
-        if (!session.isLoggedIn()) {
-            logoutUser();
-        }
-
-        // Fetching user details from sqlite
-        HashMap<String, String> user = db.getUserDetails();
-
-        String name = user.get("name");
-        String email = user.get("email");
-
-        // Displaying the user details on the screen
-        txtName.setText(name);
-        txtEmail.setText(email);
-
-        // Logout button click event
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                logoutUser();
-            }
-        });
     }
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(new Home(), "Home");
-        adapter.addFrag(new Account(), "Add");
-        adapter.addFrag(new AddItem(), "Account");
+        adapter.addFrag(new AddItem(), "Add");
+        adapter.addFrag(new Account(), "Account");
         viewPager.setAdapter(adapter);
     }
 
@@ -151,9 +117,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void logoutUser() {
         session.setLogin(false);
-
         db.deleteUsers();
-
         // Launching the login activity
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
