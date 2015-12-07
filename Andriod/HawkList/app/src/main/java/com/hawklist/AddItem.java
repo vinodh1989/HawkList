@@ -48,7 +48,7 @@ public class AddItem extends Fragment implements View.OnClickListener {
 
     private String KEY_IMAGE = "image";
     private String KEY_NAME = "name";
-    private String KEY_COST = "cost";
+    //private String KEY_COST = "cost";
 
     public AddItem() {
         // Required empty public constructor
@@ -69,6 +69,8 @@ public class AddItem extends Fragment implements View.OnClickListener {
         itemname = (EditText) v.findViewById(R.id.itemname);
         itemcost = (EditText) v.findViewById(R.id.itemcost);
         imageView  = (ImageView) v.findViewById(R.id.imageView);
+        buttonChoose.setOnClickListener(this);
+        buttonUpload.setOnClickListener(this);
 
         return v;
     }
@@ -111,7 +113,7 @@ public class AddItem extends Fragment implements View.OnClickListener {
 
                 //Getting Item Name
                 String name = itemname.getText().toString().trim();
-                String cost = itemcost.getText().toString().trim();
+                //String cost = itemcost.getText().toString().trim();
 
                 //Creating parameters
                 Map<String,String> params = new Hashtable<String, String>();
@@ -119,7 +121,7 @@ public class AddItem extends Fragment implements View.OnClickListener {
                 //Adding parameters
                 params.put(KEY_IMAGE, image);
                 params.put(KEY_NAME, name);
-                params.put(KEY_COST, cost);
+                //params.put(KEY_COST, cost);
 
                 //returning parameters
                 return params;
@@ -143,9 +145,6 @@ public class AddItem extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        buttonChoose.setOnClickListener(this);
-        buttonUpload.setOnClickListener(this);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == getActivity().RESULT_OK && data != null && data.getData() != null) {
             Uri filePath = data.getData();
             try {
@@ -158,7 +157,7 @@ public class AddItem extends Fragment implements View.OnClickListener {
             }
         }
     }
-
+    @Override
     public void onClick(View v) {
 
         if(v == buttonChoose){

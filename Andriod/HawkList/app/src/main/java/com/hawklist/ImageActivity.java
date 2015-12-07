@@ -1,14 +1,23 @@
 package com.hawklist;
 
+import com.hawklist.CustomListAdapter;
+import app.AppController;
+import helper.Image;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.Menu;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.android.volley.Response;
@@ -16,56 +25,34 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import app.AppController;
-import helper.Image;
-
-public class Home extends Fragment{
-
-
+public class ImageActivity extends Activity {
     // Log tag
     private static final String TAG = MainActivity.class.getSimpleName();
 
     // Movies json url
     private static final String url = "http://api.androidhive.info/json/movies.json";
     private ProgressDialog pDialog;
-    private List<Image> imageList = new ArrayList<Image>();
+    private List<Image> movieList = new ArrayList<Image>();
     private ListView listView;
     private CustomListAdapter adapter;
 
-    public Home() {
-        // Required empty public constructor
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
+        setContentView(R.layout.list_main);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.list_main, container, false);
-
-
-
-        listView = (ListView) v.findViewById(R.id.list);
-        adapter = new CustomListAdapter(getActivity(), imageList);
+        listView = (ListView) findViewById(R.id.list);
+        adapter = new CustomListAdapter(this, movieList);
         listView.setAdapter(adapter);
 
-        pDialog = new ProgressDialog(getActivity());
+        pDialog = new ProgressDialog(this);
         // Showing progress dialog before making http request
         pDialog.setMessage("Loading...");
         pDialog.show();
 
+        // changing action bar color
+        getActionBar().setBackgroundDrawable(
+                new ColorDrawable(Color.parseColor("#1b1b1b")));
 
         // Creating volley request obj
         JsonArrayRequest movieReq = new JsonArrayRequest(url,
@@ -96,7 +83,7 @@ public class Home extends Fragment{
                                 movie.setGenre(genre);
 
                                 // adding movie to movies array
-                                imageList.add(movie);
+                                movieList.add(movie);
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -119,8 +106,6 @@ public class Home extends Fragment{
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(movieReq);
-
-        return v;
     }
 
     @Override
@@ -136,13 +121,11 @@ public class Home extends Fragment{
         }
     }
 
-
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Do something that differs the Activity's menu here
-        super.onCreateOptionsMenu(menu, inflater);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
-
-
 
 }
